@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load comment_tags %}
+
+
+{% block content %}
+    {% for post in posts %}
+        <article class="post">
+            <h2><a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a></h2>
+
+            <div class="tags">
+                {% for tag in post.tags.all %}
+                    <a href="{% url 'posts:objects_for_tag' tag.slug %}">{{ tag.name }}</a>
+                {% endfor %}
+                <div class="cleaner"></div>
+            </div>
+
+            <div class="body">{{ post.body|truncatewords_html:50|safe }}</div>
+            <div class="data">
+                <p>Дата: {{ post.pub_date|date:'d.m.Y' }}</p>
+                <p>Комментариев: {% comments_count post %}</p>
+                <div class="cleaner"></div>
+            </div>
+        </article>
+    {% endfor %}
+
+    <nav>
+      <ul class="pager">
+      {% if page_obj.has_previous %}
+        <li>
+          <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+        </li>
+      {% else %}
+        <li class="disabled">
+          <a>Назад</a>
+        </li>
+      {% endif %}
+
+        <li class="page-current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</li>
+
+      {% if page_obj.has_next %}
+        <li>
+            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+        </li>
+      {% else %}
+        <li class="disabled">
+            <a>Вперед</a>
+        </li>
+      {% endif %}
+      </ul>
+    </nav>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% load comment_tags %}
+
+
+{% block content %}
+    <article class="post">
+        <h2>{{ post.title }}</h2>
+
+        <div class="tags">
+            {% for tag in post.tags.all %}
+                <a href="{% url 'posts:objects_for_tag' tag.slug %}">{{ tag.name }}</a>
+            {% endfor %}
+            <div class="cleaner"></div>
+        </div>
+
+        <div class="body">{{ post.body|safe }}</div>
+
+        <div class="data">
+            <p>{{ post.pub_date|date:'d.m.Y' }}</p>
+            <p>Комментариев: <span class="post-comment-count">{% comments_count post %}</span></p>
+            <div class="cleaner"></div>
+        </div>
+    </article>
+
+    {% render_comment_list for post %}
+
+    {% if user.is_authenticated %}
+        <div id="comment_form_original_position">
+            <form id="{{ post.id }}" class="comment_send_form" action="{% url 'posts:add_comment' %}" method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Оставить комментарий: </label>
+                    <textarea name="comment" class="form-control" style="min-width: 100%" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="send_comment btn btn-default">Отправить</button>
+
+                <div id="clear"></div>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

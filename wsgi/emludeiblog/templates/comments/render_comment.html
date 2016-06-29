@@ -1,0 +1,22 @@
+<li class="comment_li" id="{{ comment.id }}" depth="{{ comment.depth }}">
+    <div class="comment_data">
+        {% if not comment.is_removed %}
+            <div class="comment_info">
+                <p class="comment_user">{{ comment.user.username }}</p>
+                <button type="button" class="comment_reply btn btn-link">Ответить</button>
+                {% if perms.comments.remove_comment %}
+                    <button type="button" action="{% url 'posts:remove_comment' %}" class="remove_comment btn btn-link">Удалить коментарий</button>
+                {% endif %}
+                {% if perms.comments.remove_comment_tree %}
+                    <button type="button" action="{% url 'posts:remove_comment_tree' %}" class="remove_comment_tree btn btn-link">Удалить дерево комментариев</button>
+                {% endif %}
+            </div>
+            <div class="comment_text">
+                {{ comment.comment }}
+            </div>
+            <div class="reply_form_position"></div>
+        {% else %}
+            <p>Злые марсиане похитили комментарий.</p>
+        {% endif %}
+    </div>
+</li>
